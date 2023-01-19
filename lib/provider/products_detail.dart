@@ -78,4 +78,12 @@ class Products with ChangeNotifier {
     _items.add(_newProduct);
     notifyListeners();
   }
+
+  void updateProduct(String productId, Product editableProduct) {
+    var selectedIndex = _items.indexWhere((prod) => prod.id == productId);
+    if (selectedIndex >= 0) {
+      _items[selectedIndex] = editableProduct;
+      notifyListeners();
+    }
+  }
 }
