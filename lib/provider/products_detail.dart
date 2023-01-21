@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'product.dart';
 
@@ -69,14 +72,29 @@ class Products with ChangeNotifier {
   // }
 
   void addProduct(Product product) {
-    var _newProduct = Product(
-        description: product.description,
-        id: DateTime.now().toString(),
-        imageUrl: product.imageUrl,
-        title: product.title,
-        price: product.price);
-    _items.add(_newProduct);
-    notifyListeners();
+    var url = Uri.parse(
+        'https://fluttershopapp-c2f4d-default-rtdb.firebaseio.com/products.json');
+    http
+        .post(url,
+            body: json.encode(
+              {
+                'title': product.title,
+                'imageUrl': product.imageUrl,
+                'price': product.price,
+                'description': product.description,
+                'isFavourite': product.isFavourite
+              },
+            ))
+        .then((response) {
+      var _newProduct = Product(
+          description: product.description,
+          id: json.decode(response.body)['name'],
+          imageUrl: product.imageUrl,
+          title: product.title,
+          price: product.price);
+      _items.add(_newProduct);
+      notifyListeners();
+    });
   }
 
   void updateProduct(String productId, Product editableProduct) {
@@ -85,5 +103,10 @@ class Products with ChangeNotifier {
       _items[selectedIndex] = editableProduct;
       notifyListeners();
     }
+  }
+
+  void deleteProduct(String productId) {
+    _items.removeWhere((prod) => prod.id == productId);
+    notifyListeners();
   }
 }

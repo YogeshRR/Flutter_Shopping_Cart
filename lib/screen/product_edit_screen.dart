@@ -66,7 +66,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
         };
       }
     }
-    _imageUrlController.text = _editableProduct.imageUrl;
+
+    if (_editableProduct.imageUrl != ' ') {
+      _imageUrlController.text = _editableProduct.imageUrl;
+    }
+
     _isInit = false;
 
     super.didChangeDependencies();
