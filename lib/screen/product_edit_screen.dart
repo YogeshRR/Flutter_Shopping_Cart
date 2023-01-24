@@ -95,39 +95,41 @@ class _EditProductScreenState extends State<EditProductScreen> {
     });
     _form.currentState?.save();
     if (_editableProduct.id.isNotEmpty) {
-      Provider.of<Products>(context, listen: false)
+      await Provider.of<Products>(context, listen: false)
           .updateProduct(_editableProduct.id, _editableProduct);
-      Navigator.of(context).pop();
     } else {
       try {
         await Provider.of<Products>(context, listen: false)
             .addProduct(_editableProduct);
       } catch (error) {
         await showDialog(
-            context: context,
-            builder: (ctx) {
-              return AlertDialog(
-                title: const Text('Error'),
-                content: const Text(
-                  'Something went wrong',
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: const Text(
+                'Something went wrong',
+              ),
+              actions: [
+                FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Okay'),
                 ),
-                actions: [
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Okay'),
-                  ),
-                ],
-              );
-            });
-      } finally {
-        setState(() {
-          _isLoading = true;
-        });
-        Navigator.of(context).pop();
+              ],
+            );
+          },
+        );
       }
     }
+    setState(
+      () {
+        _isLoading = true;
+      },
+    );
+    // ignore: use_build_context_synchronously
+    Navigator.of(context).pop();
   }
 
   @override
