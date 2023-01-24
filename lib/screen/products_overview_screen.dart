@@ -25,12 +25,21 @@ class ProductOverViewScreen extends StatefulWidget {
 class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
   bool _isFavorite = false;
   bool _isInit = true;
+  bool _isLoading = false;
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      Provider.of<Products>(context).fetchProductsAndSet();
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context).fetchProductsAndSet().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
     }
     _isInit = false;
+
     super.didChangeDependencies();
   }
 

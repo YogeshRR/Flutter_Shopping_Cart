@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 import 'product.dart';
 
 class Products with ChangeNotifier {
-  final List<Product> _items = [
-    Product(
+  List<Product> _items = [
+    /* Product(
       id: 'p1',
       title: 'Red Shirt',
       description: 'A red shirt - it is pretty red!',
@@ -38,7 +38,7 @@ class Products with ChangeNotifier {
       price: 49.99,
       imageUrl:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),
+    ),*/
   ];
 
   //List<Product> _items = [];
@@ -76,7 +76,26 @@ class Products with ChangeNotifier {
         'https://fluttershopapp-c2f4d-default-rtdb.firebaseio.com/products.json');
     try {
       final response = await http.get(url);
-      print(json.decode(response.body));
+      //print(json.decode(response.body));
+      var extractedData = jsonDecode(response.body) as Map<String, dynamic>;
+      List<Product> loadedData = [];
+      extractedData.forEach(
+        (productId, prodData) {
+          loadedData.add(
+            Product(
+              description: prodData['description'],
+              id: productId,
+              imageUrl: prodData['imageUrl'],
+              price: prodData['price'],
+              title: prodData['title'],
+              isFavourite: prodData['isFavourite'],
+            ),
+          );
+        },
+      );
+      _items = loadedData;
+      print(_items);
+      notifyListeners();
     } catch (error) {
       print(error.toString());
     }
@@ -98,6 +117,7 @@ class Products with ChangeNotifier {
           },
         ),
       );
+
       var _newProduct = Product(
           description: product.description,
           id: json.decode(response.body)['name'],
