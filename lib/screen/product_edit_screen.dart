@@ -88,7 +88,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.dispose();
   }
 
-  void _saveData() {
+  void _saveData() async {
     _form.currentState?.validate();
     setState(() {
       _isLoading = true;
@@ -99,16 +99,34 @@ class _EditProductScreenState extends State<EditProductScreen> {
           .updateProduct(_editableProduct.id, _editableProduct);
       Navigator.of(context).pop();
     } else {
-      Provider.of<Products>(context, listen: false)
-          .addProduct(_editableProduct)
-          .then(
-        (_) {
-          setState(() {
-            _isLoading = true;
-          });
-          Navigator.of(context).pop();
-        },
-      );
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editableProduct);
+      } catch (error) {
+        await showDialog(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: const Text('Error'),
+                content: const Text(
+                  'Something went wrong',
+                ),
+                actions: [
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Okay'),
+                  ),
+                ],
+              );
+            });
+      } finally {
+        setState(() {
+          _isLoading = true;
+        });
+        Navigator.of(context).pop();
+      }
     }
   }
 

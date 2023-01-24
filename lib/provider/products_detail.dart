@@ -71,21 +71,33 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  Future<void> addProduct(Product product) {
+  Future<void> fetchProductsAndSet() async {
     var url = Uri.parse(
         'https://fluttershopapp-c2f4d-default-rtdb.firebaseio.com/products.json');
-    return http
-        .post(url,
-            body: json.encode(
-              {
-                'title': product.title,
-                'imageUrl': product.imageUrl,
-                'price': product.price,
-                'description': product.description,
-                'isFavourite': product.isFavourite
-              },
-            ))
-        .then((response) {
+    try {
+      final response = await http.get(url);
+      print(json.decode(response.body));
+    } catch (error) {
+      print(error.toString());
+    }
+  }
+
+  Future<void> addProduct(Product product) async {
+    var url = Uri.parse(
+        'https://fluttershopapp-c2f4d-default-rtdb.firebaseio.com/products.json');
+    try {
+      final response = await http.post(
+        url,
+        body: json.encode(
+          {
+            'title': product.title,
+            'imageUrl': product.imageUrl,
+            'price': product.price,
+            'description': product.description,
+            'isFavourite': product.isFavourite
+          },
+        ),
+      );
       var _newProduct = Product(
           description: product.description,
           id: json.decode(response.body)['name'],
@@ -94,7 +106,9 @@ class Products with ChangeNotifier {
           price: product.price);
       _items.add(_newProduct);
       notifyListeners();
-    });
+    } catch (error) {
+      print(error.toString());
+    }
   }
 
   void updateProduct(String productId, Product editableProduct) {
