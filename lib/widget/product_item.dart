@@ -39,14 +39,6 @@ class ProductItem extends StatelessWidget {
                     ),
               color: Theme.of(context).accentColor,
               onPressed: () {
-                if (product.isFavourite) {
-                  Provider.of<Products>(context, listen: false)
-                      .isFavourite(product.id, false);
-                } else {
-                  Provider.of<Products>(context, listen: false)
-                      .isFavourite(product.id, true);
-                }
-
                 product.toogleFavorite();
               },
             ),
