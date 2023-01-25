@@ -72,8 +72,6 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  Future<void> isFavourite(String productId, bool isFavourite) async {}
-
   Future<void> fetchProductsAndSet() async {
     var url = Uri.parse(
         'https://fluttershopapp-c2f4d-default-rtdb.firebaseio.com/products.json');
@@ -82,6 +80,9 @@ class Products with ChangeNotifier {
       //print(json.decode(response.body));
       var extractedData = jsonDecode(response.body) as Map<String, dynamic>;
       List<Product> loadedData = [];
+      if (extractedData == <String, dynamic>{}) {
+        return;
+      }
       extractedData.forEach(
         (productId, prodData) {
           loadedData.add(

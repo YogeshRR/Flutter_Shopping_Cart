@@ -26,7 +26,7 @@ class Product with ChangeNotifier {
     notifyListeners();
     try {
       var url = Uri.parse(
-          'https://fluttershopapp-c2f4d-default-rtdb.firebaseio.com/products/$id');
+          'https://fluttershopapp-c2f4d-default-rtdb.firebaseio.com/products/$id.json');
       var response = await http.patch(
         url,
         body: json.encode(
