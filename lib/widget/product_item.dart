@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../provider/products_detail.dart';
 import '../provider/cart.dart';
 import '../provider/product.dart';
 import '../screen/product_detail_screen.dart';
@@ -38,6 +39,14 @@ class ProductItem extends StatelessWidget {
                     ),
               color: Theme.of(context).accentColor,
               onPressed: () {
+                if (product.isFavourite) {
+                  Provider.of<Products>(context, listen: false)
+                      .isFavourite(product.id, false);
+                } else {
+                  Provider.of<Products>(context, listen: false)
+                      .isFavourite(product.id, true);
+                }
+
                 product.toogleFavorite();
               },
             ),
