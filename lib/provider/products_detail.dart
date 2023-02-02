@@ -7,6 +7,8 @@ import '../model/http_exception.dart';
 import 'product.dart';
 
 class Products with ChangeNotifier {
+  String token;
+
   List<Product> _items = [
     /* Product(
       id: 'p1',
@@ -42,6 +44,8 @@ class Products with ChangeNotifier {
     ),*/
   ];
 
+  Products(this._items, this.token);
+
   //List<Product> _items = [];
   bool _showFavorite = false;
 
@@ -74,7 +78,7 @@ class Products with ChangeNotifier {
 
   Future<void> fetchProductsAndSet() async {
     var url = Uri.parse(
-        'https://fluttershopapp-c2f4d-default-rtdb.firebaseio.com/products.json');
+        'https://fluttershopapp-c2f4d-default-rtdb.firebaseio.com/products.json?auth=$token');
     try {
       final response = await http.get(url);
       //print(json.decode(response.body));

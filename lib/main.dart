@@ -28,8 +28,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: ((ctx) => Auth()),
         ),
-        ChangeNotifierProvider(
-          create: (ctx) => Products(),
+        ChangeNotifierProxyProvider<Auth, Products>(
+          create: (_) => Products([], ''),
+          update: (ctx, auth, previousProduct) =>
+              Products(previousProduct!.items, auth.token as String),
         ),
         ChangeNotifierProvider(
           create: (ctd) => Cart(),
@@ -38,8 +40,8 @@ class MyApp extends StatelessWidget {
           create: (ctx) => Order(),
         ),
       ],
-      child: Consumer(
-        builder: (context, value, _) => MaterialApp(
+      child: Consumer<Auth>(
+        builder: (context, auth, _) => MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: ThemeData(
@@ -47,7 +49,7 @@ class MyApp extends StatelessWidget {
             accentColor: Colors.orange,
             fontFamily: 'Lato',
           ),
-          home: const AuthScreen(),
+          home: auth.isAuth ? ProductOverViewScreen() : const AuthScreen(),
           routes: {
             ProductDetailScreen.routeName: (ctx) => const ProductDetailScreen(),
             CartScreen.routeName: (context) => const CartScreen(),
